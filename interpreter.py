@@ -1,6 +1,6 @@
 import os
 from cmd import Cmd
-from Project2.client import FtpClient
+from client import FtpClient
 
 
 class FtpInterpreter(Cmd):

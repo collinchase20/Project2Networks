@@ -1,6 +1,6 @@
 import sys
 import argparse
-from Project2.interpreter import FtpInterpreter
+from interpreter import FtpInterpreter
 
 #test2
 def main():
