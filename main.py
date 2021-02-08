@@ -2,7 +2,7 @@ import sys
 import argparse
 from Project2.interpreter import FtpInterpreter
 
-#test
+#test2
 def main():
     # Set up an argument parser for the terminal
     parser = argparse.ArgumentParser()
