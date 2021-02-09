@@ -14,17 +14,16 @@ def main():
 
     # Add arguments
     parser.add_argument('-ls', '--url', type=str)
-    #parser.add_argument('-mkdir', '--url', type=str)
-    #parser.add_argument('-rm', '--url', type=str)
-    #parser.add_argument('rmdir', '--url', type=str)
-    #parser.add_argument('-cp', 'arg1', 'arg2')
-    #parser.add_argument('-mv', 'arg1', 'arg2')
+    parser.add_argument('-mkdir', '--url', type=str)
+    parser.add_argument('-rm', '--url', type=str)
+    parser.add_argument('rmdir', '--url', type=str)
 
     args = parser.parse_args()
 
     ftps_interpreter = FtpInterpreter(debug=args.debug)
 
     ftps_interpreter.do_connect("networks-teaching-ftp.ccs.neu.edu")
+
 
     if (args.ls):
         ftps_interpreter.do_list(args.url)
