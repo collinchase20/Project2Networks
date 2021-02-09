@@ -13,10 +13,10 @@ def main():
                              'FTP client.')
 
     # Add arguments
-    parser.add_argument('-ls', '--url', type=str)
-    parser.add_argument('-mkdir', '--url', type=str)
-    parser.add_argument('-rm', '--url', type=str)
-    parser.add_argument('rmdir', '--url', type=str)
+    parser.add_argument('-ls', '--urlLS', type=str)
+    parser.add_argument('-mkdir', '--urlMKDIR', type=str)
+    parser.add_argument('-rm', '--urlRM', type=str)
+    parser.add_argument('rmdir', '--urlRMDIR', type=str)
 
     args = parser.parse_args()
 
@@ -26,13 +26,13 @@ def main():
 
 
     if (args.ls):
-        ftps_interpreter.do_list(args.url)
+        ftps_interpreter.do_list(args.urlLS)
     elif (args.mkdir):
-        ftps_interpreter.do_mkdir(args.url)
+        ftps_interpreter.do_mkdir(args.urlMKDIR)
     elif (args.rm):
-        ftps_interpreter.do_rm(args.url)
+        ftps_interpreter.do_rm(args.urlRM)
     elif (args.rmdir):
-        ftps_interpreter.do_rmdir(args.url)
+        ftps_interpreter.do_rmdir(args.urlRMDIR)
     else:
         print("Should Not Come Here")
 
