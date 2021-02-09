@@ -14,9 +14,9 @@ def main():
 
     # Add arguments
     parser.add_argument('-ls', '--url', type=str)
-    parser.add_argument('-mkdir', '--url', type=str)
-    parser.add_argument('-rm', '--url', type=str)
-    parser.add_argument('rmdir', '--url', type=str)
+    #parser.add_argument('-mkdir', '--url', type=str)
+    #parser.add_argument('-rm', '--url', type=str)
+    #parser.add_argument('rmdir', '--url', type=str)
     #parser.add_argument('-cp', 'arg1', 'arg2')
     #parser.add_argument('-mv', 'arg1', 'arg2')
 
