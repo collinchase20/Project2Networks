@@ -189,7 +189,7 @@ class FtpClient(object):
         self._data_connection.sendall(content)
         self._data_connection.close()
 
-    def connect(self, host=None):
+    def connect(self, host):
         """
         Connect to an FTP server in the specified host.
         Args:
@@ -198,7 +198,7 @@ class FtpClient(object):
         Returns:
             Message from host.
         """
-        host = host or 'localhost'
+        #host = host or 'localhost'
 
         if self.host is not None:
             self._reset_sockets()
