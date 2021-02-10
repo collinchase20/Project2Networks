@@ -9,10 +9,10 @@ def main():
 
 
     # Add arguments
-    parser.add_argument('-ls', '-urlLS', type=str, required=False)
-    parser.add_argument('-mkdir', '-urlMKDIR', type=str, required=False)
-    parser.add_argument('-rm', '-urlRM', type=str, required=False)
-    parser.add_argument('-rmdir', '-urlRMDIR', type=str, required=False)
+    parser.add_argument('-ls', 'urlLS', type=str, required=False)
+    parser.add_argument('-mkdir', 'urlMKDIR', type=str, required=False)
+    parser.add_argument('-rm', 'urlRM', type=str, required=False)
+    parser.add_argument('-rmdir', 'urlRMDIR', type=str, required=False)
 
     args = parser.parse_args()
 
