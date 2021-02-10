@@ -3,16 +3,12 @@ from cmd import Cmd
 from client import FtpClient
 
 
-class FtpInterpreter(Cmd):
+class FtpInterpreter():
     """
     FTP client command line utility.
     """
-    def __init__(self, debug=False):
-        Cmd.__init__(self)
-        self.intro = ('FTP Client. Start typing help or ? to see available '
-                      'commands.')
-        self.prompt = 'FTP > '
-        self._ftp_client = FtpClient(debug=debug)
+    def __init__(self):
+        self._ftp_client = FtpClient()
 
     def _update_prompt(self):
         prompt = 'FTP'
