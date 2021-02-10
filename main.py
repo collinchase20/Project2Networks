@@ -21,8 +21,8 @@ def main():
 
     ftps_interpreter.do_connect("networks-teaching-ftp.ccs.neu.edu")
 
-    if not len(sys.argv) > 1:
-        print("Please pass an argument to the program." + "\n")
+    if (not args.ls and not args.mkdir and not args.rm and not args.rmdir):
+        print("Please provide one valid FTP operation (ls, mkdir, rm, rmdir)")
     elif (args.ls is not None):
         ftps_interpreter.do_list(args.url)
     elif (args.mkdir is not None):
