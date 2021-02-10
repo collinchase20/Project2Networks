@@ -13,8 +13,8 @@ def main():
     parser.add_argument('-mkdir', type=str, required=False)
     parser.add_argument('-rm', type=str, required=False)
     parser.add_argument('-rmdir', type=str, required=False)
-    parser.add_argument("url", type=str, required=True)
-    parser.add_argument("url2", type=str, required=False)
+    parser.add_argument("url")
+    parser.add_argument("url2")
 
     args = parser.parse_args()
 
