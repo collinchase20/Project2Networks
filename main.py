@@ -20,8 +20,8 @@ def main():
 
     ftps_interpreter.do_connect("networks-teaching-ftp.ccs.neu.edu")
 
-    if (len(sys.argv) == 0):
-        print("Please give an argument")
+    if not len(sys.argv) > 1:
+        print(parser.print_help())
 
 
     if (args.ls is not None):
