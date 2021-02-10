@@ -8,10 +8,6 @@ def main():
     parser = argparse.ArgumentParser()
 
 
-    parser.add_argument('--debug', action='store_true',
-                        help='Use this to see debug output from the '
-                             'FTP client.')
-
     # Add arguments
     parser.add_argument('-ls', '--urlLS', type=str)
     parser.add_argument('-mkdir', '--urlMKDIR', type=str)
@@ -38,8 +34,4 @@ def main():
 
 
 
-    #ftps_interpreter.cmdloop()
-
-
-#if __name__ == '__main__':
 main()
