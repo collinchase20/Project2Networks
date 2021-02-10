@@ -103,9 +103,9 @@ class FtpClient():
     RNFR_COMMAND = 'RNFR'
     RNTO_COMMAND = 'RNTO'
 
-    STATUS_230 = '230'
-    STATUS_550 = '550'
-    STATUS_530 = '530'
+    STATUS_230 = str.encode('230')
+    STATUS_550 = str.encode('550')
+    STATUS_530 = str.encode('530')
 
     def __init__(self, debug=False):
         self._debug = debug
