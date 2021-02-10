@@ -136,6 +136,7 @@ class FtpClient():
     def _send_command(self, command, *args):
         for a in args:
             command = '{} {}'.format(command, a)
+            command = str.encode(command)
         try:
             self._log('sending command - {}'.format(command))
             self._command_socket.sendall('{}\r\n'.format(command))
