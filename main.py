@@ -20,7 +20,7 @@ def main():
 
     args = parser.parse_args()
 
-    ftps_interpreter = FtpInterpreter(debug=args.debug)
+    ftps_interpreter = FtpInterpreter()
 
     ftps_interpreter.do_connect("networks-teaching-ftp.ccs.neu.edu")
 
