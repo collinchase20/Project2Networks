@@ -9,10 +9,12 @@ def main():
 
 
     # Add arguments
-    parser.add_argument('-ls', 'urlLS', type=str, required=False)
-    parser.add_argument('-mkdir', 'urlMKDIR', type=str, required=False)
-    parser.add_argument('-rm', 'urlRM', type=str, required=False)
-    parser.add_argument('-rmdir', 'urlRMDIR', type=str, required=False)
+    parser.add_argument('-ls', type=str, required=False)
+    parser.add_argument('-mkdir', type=str, required=False)
+    parser.add_argument('-rm', type=str, required=False)
+    parser.add_argument('-rmdir', type=str, required=False)
+    parser.add_argument("url", type=str, required=True)
+    parser.add_argument("url2", type=str, required=False)
 
     args = parser.parse_args()
 
@@ -22,15 +24,14 @@ def main():
 
     if not len(sys.argv) > 1:
         print("Please pass an argument to the program." + "\n")
-        #print(parser.print_help())
     elif (args.ls is not None):
-        ftps_interpreter.do_list(args.urlLS)
+        ftps_interpreter.do_list(args.url)
     elif (args.mkdir is not None):
-        ftps_interpreter.do_mkdir(args.urlMKDIR)
+        ftps_interpreter.do_mkdir(args.url)
     elif (args.rm is not None):
-        ftps_interpreter.do_rm(args.urlRM)
+        ftps_interpreter.do_rm(args.url)
     elif (args.rmdir is not None):
-        ftps_interpreter.do_rmdir(args.urlRMDIR)
+        ftps_interpreter.do_rmdir(args.url)
     else:
         print("Should Not Come Here")
 
