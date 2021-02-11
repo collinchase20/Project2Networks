@@ -27,6 +27,7 @@ def main():
     elif (args.mkdir is not None):
         interpreter = initialConnect(interpreter)
         interpreter.do_mkdir(args.url)
+        return Exception(args.url)
         logoutAndDisconnect(interpreter)
     elif (args.rm is not None):
         interpreter = initialConnect(interpreter)
