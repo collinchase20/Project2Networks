@@ -244,7 +244,7 @@ class FtpClient():
         elif data.startswith(FtpClient.STATUS_530):
             self.user = None
 
-        #return data
+        return data
 
     def logout(self):
         """

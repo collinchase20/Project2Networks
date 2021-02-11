@@ -16,30 +16,39 @@ def main():
     parser.add_argument("url")
 
     args = parser.parse_args()
+    interpreter = FtpInterpreter()
 
     if (not args.ls and not args.mkdir and not args.rm and not args.rmdir):
         print("Please provide one valid FTP operation (ls, mkdir, rm, rmdir)")
     elif (args.ls is not None):
-        ftps_interpreter = initialConnect()
-        ftps_interpreter.do_list(args.url)
+        interpreter = initialConnect(interpreter)
+        interpreter.do_list(args.url)
+        logoutAndDisconnect(interpreter)
     elif (args.mkdir is not None):
-        ftps_interpreter = initialConnect()
-        ftps_interpreter.do_mkdir(args.url)
+        interpreter = initialConnect(interpreter)
+        interpreter.do_mkdir(args.url)
+        logoutAndDisconnect(interpreter)
     elif (args.rm is not None):
-        ftps_interpreter = initialConnect()
-        ftps_interpreter.do_rm(args.url)
+        interpreter = initialConnect(interpreter)
+        interpreter.do_rm(args.url)
+        logoutAndDisconnect(interpreter)
     elif (args.rmdir is not None):
-        ftps_interpreter = initialConnect()
-        ftps_interpreter.do_rmdir(args.url)
+        interpreter = initialConnect(interpreter)
+        interpreter.do_rmdir(args.url)
+        logoutAndDisconnect(interpreter)
     else:
         print("Should Not Come Here")
 
 
-def initialConnect():
-    ftps_interpreter = FtpInterpreter()
-    ftps_interpreter.do_connect("networks-teaching-ftp.ccs.neu.edu")
-    ftps_interpreter.do_login()
-    return ftps_interpreter
+def initialConnect(interpreter):
+    interpreter.do_connect("networks-teaching-ftp.ccs.neu.edu")
+    interpreter.do_login()
+    return interpreter
+
+def logoutAndDisconnect(interpreter):
+    interpreter.do_logout()
+    interpreter.do_disconnect()
+
 
 
 
