@@ -244,8 +244,7 @@ class FtpClient():
         elif data.startswith(FtpClient.STATUS_530):
             self.user = None
 
-        #return data
-        print(data)
+        return data
 
     def logout(self):
         """
@@ -358,8 +357,7 @@ class FtpClient():
         self._send_command(FtpClient.MKD_COMMAND, directory)
         data = self._receive_command_data()
 
-        #return data
-        print(data)
+        return data
 
     def rm(self, filename):
         """

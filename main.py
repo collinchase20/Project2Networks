@@ -32,7 +32,7 @@ def main():
         print("Please provide one valid FTP operation (ls, mkdir, rm, rmdir)")
     elif (args.ls is not None):
         interpreter = initialConnect(interpreter, username, password)
-        interpreter.do_list("networks-teaching-ftp.ccs.neu.edu/Test")
+        interpreter.do_list("/Test")
         logoutAndDisconnect(interpreter)
     elif (args.mkdir is not None):
         interpreter = initialConnect(interpreter, username, password)
