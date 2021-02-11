@@ -19,7 +19,9 @@ class FtpInterpreter():
         self.prompt = '{} > '.format(prompt)
 
     def _perform_ftp_command(self, command, *args):
+        print("we are here")
         method = getattr(self._ftp_client, command)
+        print(method)
         try:
             response = method(*args)
         except:
@@ -42,7 +44,7 @@ class FtpInterpreter():
         self._update_prompt()
 
 
-    def do_disconnect(self, *args):
+    def do_disconnect(self):
         """
         Command to disconnect from connected FTP host.
         """

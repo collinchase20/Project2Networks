@@ -53,7 +53,6 @@ def main():
 def initialConnect(interpreter, username, password):
     interpreter.do_connect("networks-teaching-ftp.ccs.neu.edu")
     interpreter.do_login(username, password)
-    #return interpreter
 
 def disconnect(interpreter):
     interpreter.do_disconnect()
