@@ -32,20 +32,20 @@ def main():
         print("Please provide one valid FTP operation (ls, mkdir, rm, rmdir)")
     elif (args.ls is not None):
         initialConnect(interpreter, username, password)
-        interpreter.do_list("Test")
-        disconnect(interpreter)
+        #interpreter.do_list("Test")
+        interpreter.do_disconnect()
     elif (args.mkdir is not None):
         initialConnect(interpreter, username, password)
         #interpreter.do_mkdir(args.url)
-        disconnect(interpreter)
+        interpreter.do_disconnect()
     elif (args.rm is not None):
         initialConnect(interpreter, username, password)
-        interpreter.do_rm(args.url)
-        disconnect(interpreter)
+        #interpreter.do_rm(args.url)
+        interpreter.do_disconnect()
     elif (args.rmdir is not None):
         initialConnect(interpreter, username, password)
-        interpreter.do_rmdir(args.url)
-        disconnect(interpreter)
+        #interpreter.do_rmdir(args.url)
+        interpreter.do_disconnect()
     else:
         print("Should Not Come Here")
 
@@ -53,9 +53,6 @@ def main():
 def initialConnect(interpreter, username, password):
     interpreter.do_connect("networks-teaching-ftp.ccs.neu.edu")
     interpreter.do_login(username, password)
-
-def disconnect(interpreter):
-    interpreter.do_disconnect()
 
 
 

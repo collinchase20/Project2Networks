@@ -38,13 +38,9 @@ class FtpClient():
     STATUS_550 = str.encode('550')
     STATUS_530 = str.encode('530')
 
-    def __init__(self, debug=False):
-        self._debug = debug
+    def __init__(self):
         self._reset_sockets()
 
-    def _log(self, info):
-        if self._debug:
-            print('debug: {}'.format(info))
 
     def _reset_sockets(self):
         self._reset_command_socket()
