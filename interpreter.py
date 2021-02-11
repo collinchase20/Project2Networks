@@ -57,13 +57,6 @@ class FtpInterpreter():
         """
         Command to login with user and password in the connected FTP host.
         """
-        #user = ''
-        #while not user:
-        #    user = input('User: ')
-        #password = ''
-        #while not password:
-        #    password = input('Password: ')
-
         response = self._perform_ftp_command('login', user, password)
         print(response)
         self._update_prompt()

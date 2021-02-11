@@ -18,18 +18,21 @@ def main():
     args = parser.parse_args()
     interpreter = FtpInterpreter()
 
+    #Get the username and password from ftp url
     initialString = args.url.split("@")[0]
     password = initialString.split(":")[2]
     process = initialString.split(":")[1]
     username = process.split("//")[1]
-    print(username)
-    print(password)
+
+    #Get the url
+    initalString2 = args.url.split("@")[1]
+
 
     if (not args.ls and not args.mkdir and not args.rm and not args.rmdir):
         print("Please provide one valid FTP operation (ls, mkdir, rm, rmdir)")
     elif (args.ls is not None):
         interpreter = initialConnect(interpreter, username, password)
-        interpreter.do_list(args.url)
+        interpreter.do_list("networks-teaching-ftp.ccs.neu.edu/Test")
         logoutAndDisconnect(interpreter)
     elif (args.mkdir is not None):
         interpreter = initialConnect(interpreter, username, password)
