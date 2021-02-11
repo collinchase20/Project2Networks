@@ -19,7 +19,7 @@ def main():
     interpreter = FtpInterpreter()
 
     initialString = args.url.split("@")[0]
-    password = initialString.split(":")[1]
+    password = initialString.split(":")[2]
     process = initialString.split(":")[1]
     username = process.split("//")[1]
     print(username)
