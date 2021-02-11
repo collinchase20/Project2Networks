@@ -18,32 +18,37 @@ def main():
     args = parser.parse_args()
     interpreter = FtpInterpreter()
 
+    initialString = args.url.split("@")[0]
+    password = initialString.split(":")[1]
+    process = initialString.split(":")[0]
+    username = process.split("//")[1]
+
     if (not args.ls and not args.mkdir and not args.rm and not args.rmdir):
         print("Please provide one valid FTP operation (ls, mkdir, rm, rmdir)")
     elif (args.ls is not None):
-        interpreter = initialConnect(interpreter)
+        interpreter = initialConnect(interpreter, username, password)
         interpreter.do_list(args.url)
         logoutAndDisconnect(interpreter)
     elif (args.mkdir is not None):
-        interpreter = initialConnect(interpreter)
+        interpreter = initialConnect(interpreter, username, password)
+        print(args.url)
         interpreter.do_mkdir(args.url)
-        return Exception(args.url)
         logoutAndDisconnect(interpreter)
     elif (args.rm is not None):
-        interpreter = initialConnect(interpreter)
+        interpreter = initialConnect(interpreter, username, password)
         interpreter.do_rm(args.url)
         logoutAndDisconnect(interpreter)
     elif (args.rmdir is not None):
-        interpreter = initialConnect(interpreter)
+        interpreter = initialConnect(interpreter, username, password)
         interpreter.do_rmdir(args.url)
         logoutAndDisconnect(interpreter)
     else:
         print("Should Not Come Here")
 
 
-def initialConnect(interpreter):
+def initialConnect(interpreter, username, password):
     interpreter.do_connect("networks-teaching-ftp.ccs.neu.edu")
-    interpreter.do_login()
+    interpreter.do_login(username, password)
     return interpreter
 
 def logoutAndDisconnect(interpreter):
