@@ -1,5 +1,3 @@
-import os
-from cmd import Cmd
 from client import FtpClient
 
 
@@ -19,7 +17,7 @@ class FtpInterpreter():
         self.prompt = '{} > '.format(prompt)
 
     def _perform_ftp_command(self, command, *args):
-        print("we are here")
+        print("About to perform ftp command")
         method = getattr(self._ftp_client, command)
         print(method)
         try:
@@ -38,7 +36,8 @@ class FtpInterpreter():
         Args:
             host (str): The host to connect to.
         """
-        response = self._perform_ftp_command('connect', host)
+        #response = self._perform_ftp_command('connect', host)
+        response = self._ftp_client.connect(host)
         print("This is the connect response")
         print(response)
         self._update_prompt()
@@ -48,7 +47,8 @@ class FtpInterpreter():
         """
         Command to disconnect from connected FTP host.
         """
-        response = self._perform_ftp_command('disconnect')
+        #response = self._perform_ftp_command('disconnect')
+        response = self._ftp_client.disconnect()
         print("This is the disconnect response")
         print(response)
         self._update_prompt()
@@ -57,7 +57,8 @@ class FtpInterpreter():
         """
         Command to login with user and password in the connected FTP host.
         """
-        response = self._perform_ftp_command('login', user, password)
+        #response = self._perform_ftp_command('login', user, password)
+        response = self._ftp_client.login(user, password)
         print("This is the login response")
         print(response)
         self._update_prompt()
@@ -70,6 +71,7 @@ class FtpInterpreter():
             filename (str): Name of file or directory to retrieve info for.
         """
         response = self._perform_ftp_command('list', filename)
+        print("This is the list response")
         print(response)
 
 
@@ -80,6 +82,7 @@ class FtpInterpreter():
             directory (str): Name of directory to create.
         """
         response = self._perform_ftp_command('mkdir', directory)
+        print("This is the make directory response")
         print(response)
 
     def do_rm(self, filename):
@@ -89,6 +92,7 @@ class FtpInterpreter():
             filename (str): Name of file to delete.
         """
         response = self._perform_ftp_command('rm', filename)
+        print("This is the remove file response")
         print (response)
 
     def do_rmdir(self, directory):
@@ -98,4 +102,5 @@ class FtpInterpreter():
             directory (str): Name of directory to delete.
         """
         response = self._perform_ftp_command('rmdir', directory)
+        print("This is the remove directory response")
         print (response)
