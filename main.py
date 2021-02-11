@@ -20,7 +20,7 @@ def main():
 
     initialString = args.url.split("@")[0]
     password = initialString.split(":")[1]
-    process = initialString.split(":")[0]
+    process = initialString.split(":")[1]
     username = process.split("//")[1]
 
     if (not args.ls and not args.mkdir and not args.rm and not args.rmdir):
