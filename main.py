@@ -35,7 +35,7 @@ def main():
         interpreter.do_list("Test")
         disconnect(interpreter)
     elif (args.mkdir is not None):
-        interpreter = initialConnect(interpreter, username, password)
+        initialConnect(interpreter, username, password)
         #interpreter.do_mkdir(args.url)
         disconnect(interpreter)
     elif (args.rm is not None):
@@ -53,7 +53,7 @@ def main():
 def initialConnect(interpreter, username, password):
     interpreter.do_connect("networks-teaching-ftp.ccs.neu.edu")
     interpreter.do_login(username, password)
-    return interpreter
+    #return interpreter
 
 def disconnect(interpreter):
     interpreter.do_disconnect()
