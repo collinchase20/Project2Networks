@@ -1,5 +1,4 @@
 import socket
-import errno
 
 
 class FtpClient():
@@ -12,96 +11,28 @@ class FtpClient():
                 otherwise.
     """
 
-    class ConnectionRefusedException(socket.error):
-        """
-        Exception raised when an FTP host refuses a connection.
-        Args:
-        host (str): Host that refused connection.
-        Attributes:
-        msg (str): Human readable string describing the exception.
-        """
-        def __init__(self, host):
-            super(FtpClient.ConnectionRefusedException, self).__init__()
-            self.msg = 'Connection to {}:{} failed. Connection refused.'\
-                .format(host, FtpClient.PORT)
-
-    class UnknownHostException(socket.gaierror):
-        """
-        Exception raised when an FTP host is unreachable.
-        Args:
-        host (str): Unreachable host.
-        Attributes:
-        msg (str): Human readable string describing the exception.
-        """
-        def __init__(self, host):
-            super(FtpClient.UnknownHostException, self).__init__()
-            self.msg = 'Connection to {}:{} failed. Host not reachable.'\
-                .format(host, FtpClient.PORT)
-
-    class TimeoutException(socket.timeout):
-        """
-        Exception raised when the FTP client socket connection has timed out.
-        Args:
-        host (str): Host for which the connection timed out.
-        Attributes:
-        msg (str): Human readable string describing the exception.
-        """
-        def __init__(self, host):
-            super(FtpClient.TimeoutException, self).__init__()
-            self.msg = 'Connection to {}:{} timed out'.format(host,
-                                                              FtpClient.PORT)
-
-    class NotConnectedException(Exception):
-        """
-        Exception raised when FTP commands are performed but the client
-        is not currently connected to a host.
-        Attributes:
-        msg (str): Human readable string describing the exception.
-        """
-        def __init__(self):
-            super(FtpClient.NotConnectedException, self).__init__()
-            self.msg = 'Not connected.'
-
-    class NotAuthenticatedException(Exception):
-        """
-        Exception raised when FTP commands are performed but the client
-        is not currently authenticated for a user in the host.
-        Attributes:
-        msg (str): Human readable string describing the exception.
-        """
-        def __init__(self):
-            super(FtpClient.NotAuthenticatedException, self).__init__()
-            self.msg = 'Not authenticated.'
-
-    class LocalIOException(IOError):
-        """
-        Exception raised when something goes wrong during local IO operations.
-        Attributes:
-        msg (str): Human readable string describing the exception.
-        """
-        def __init__(self, msg):
-            super(FtpClient.LocalIOException, self).__init__()
-            self.msg = 'Local IO error - {}'.format(msg)
-
     PORT = 21
     SOCKET_TIMEOUT_SECONDS = 5
     SOCKET_RCV_BYTES = 4096
 
-    LIST_COMMAND = 'LIST'
     USER_COMMAND = 'USER'
     PASS_COMMAND = 'PASS'
-    EPRT_COMMAND = 'EPRT'
-    QUIT_COMMAND = 'QUIT'
-    RETR_COMMAND = 'RETR'
-    STOR_COMMAND = 'STOR'
-    PWD_COMMAND = 'PWD'
-    CWD_COMMAND = 'CWD'
-    CDUP_COMMAND = 'CDUP'
-    MKD_COMMAND = 'MKD'
+    TYPE_COMMAND = 'TYPE'
+    MODE_COMMAND = 'MODE'
+    STRU_COMMAND = "STRU"
+
+    LIST_COMMAND = 'LIST'
     DELE_COMMAND = 'DELE'
+    MKD_COMMAND = 'MKD'
     RMD_COMMAND = 'RMD'
-    RNFR_COMMAND = 'RNFR'
-    RNTO_COMMAND = 'RNTO'
+    STOR_COMMAND = 'STOR'
+    RETR_COMMAND = 'RETR'
+
+    QUIT_COMMAND = 'QUIT'
+    PASV_COMMAND = 'PASV'
+
+    EPRT_COMMAND = 'ERPT'
+
 
     STATUS_230 = str.encode('230')
     STATUS_550 = str.encode('550')
@@ -142,8 +73,8 @@ class FtpClient():
             self._log('sending command - {}'.format(command))
             #self._command_socket.sendall('{}\r\n'.format(command))
             self._command_socket.sendall(finalcommand)
-        except socket.timeout:
-            raise FtpClient.TimeoutException(self.host)
+        except socket.timeout as e:
+            raise Exception (e)
 
     def _receive_command_data(self):
         data = self._command_socket.recv(FtpClient.SOCKET_RCV_BYTES)
@@ -152,11 +83,11 @@ class FtpClient():
 
     def _check_is_connected(self):
         if self.host is None:
-            raise FtpClient.NotConnectedException()
+            raise Exception("You are not connected to a FTP server.")
 
     def _check_is_authenticated(self):
         if self.user is None:
-            raise FtpClient.NotAuthenticatedException()
+            raise Exception("You are not authenticated for the FTP server.")
 
     def _open_data_socket(self):
         self._data_address, self._data_port = \
@@ -210,17 +141,30 @@ class FtpClient():
             self._log('connecting to {}:{}'.format(host, FtpClient.PORT))
             self._command_socket.connect((host, FtpClient.PORT))
             self.host = host
-        except socket.timeout:
+        except socket.timeout as e:
             self._reset_sockets()
-            raise FtpClient.TimeoutException(host)
-        except socket.gaierror:
+            raise Exception(e)
+        except socket.gaierror as e:
             self._reset_sockets()
-            raise FtpClient.UnknownHostException(host)
+            raise Exception(e)
         except socket.error as e:
-            if e.errno == errno.ECONNREFUSED:
-                raise FtpClient.ConnectionRefusedException(host)
+            raise Exception(e)
 
         return self._receive_command_data()
+
+    def disconnect(self):
+        """
+        Perform QUIT command (disconnect) on connected host.
+        Returns:
+            Message from host.
+        """
+        self._check_is_connected()
+
+        self._send_command(FtpClient.QUIT_COMMAND)
+        data = self._receive_command_data()
+        self._reset_sockets()
+
+        return data
 
     def login(self, user, password):
         """
@@ -283,65 +227,6 @@ class FtpClient():
 
         return data
 
-
-    def disconnect(self):
-        """
-        Perform QUIT command (disconnect) on connected host.
-        Returns:
-            Message from host.
-        """
-        self._check_is_connected()
-
-        self._send_command(FtpClient.QUIT_COMMAND)
-        data = self._receive_command_data()
-        self._reset_sockets()
-
-        return data
-
-
-    def pwd(self):
-        """
-        Perform PWD command on connected host.
-        Returns:
-            Message from host.
-        """
-        self._check_is_connected()
-        self._check_is_authenticated()
-
-        self._send_command(FtpClient.PWD_COMMAND)
-        data = self._receive_command_data()
-
-        return data
-
-    def cwd(self, directory):
-        """
-        Perform CWD command on connected host.
-        Args:
-            directory (str): Name of directory to work on.
-        Returns:
-            Message from host.
-        """
-        self._check_is_connected()
-        self._check_is_authenticated()
-
-        self._send_command(FtpClient.CWD_COMMAND, directory)
-        data = self._receive_command_data()
-
-        return data
-
-    def cdup(self):
-        """
-        Perform CDUP command on connected host.
-        Returns:
-            Message from host.
-        """
-        self._check_is_connected()
-        self._check_is_authenticated()
-
-        self._send_command(FtpClient.CDUP_COMMAND)
-        data = self._receive_command_data()
-
-        return data
 
     def mkdir(self, directory):
         """

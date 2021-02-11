@@ -53,6 +53,15 @@ class FtpInterpreter():
         print(response)
         self._update_prompt()
 
+
+    def do_disconnect(self, *args):
+        """
+        Command to disconnect from connected FTP host.
+        """
+        response = self._perform_ftp_command('disconnect')
+        print(response)
+        self._update_prompt()
+
     def do_login(self, user, password):
         """
         Command to login with user and password in the connected FTP host.
@@ -68,6 +77,7 @@ class FtpInterpreter():
         self._perform_ftp_command('logout')
         self._update_prompt()
 
+
     def do_list(self, filename):
         """
         Command to perform LIST command on the connected FTP host.
@@ -75,41 +85,8 @@ class FtpInterpreter():
             filename (str): Name of file or directory to retrieve info for.
         """
         response = self._perform_ftp_command('list', filename)
-        return response
-
-
-    def do_disconnect(self, *args):
-        """
-        Command to disconnect from connected FTP host.
-        """
-        response = self._perform_ftp_command('disconnect')
         print(response)
-        self._update_prompt()
 
-
-    def do_pwd(self, *args):
-        """
-        Command to retrieve the current directory on the connected FTP host.
-        """
-        response = self._perform_ftp_command('pwd')
-        print (response)
-
-    def do_cwd(self, directory):
-        """
-        Command to change current directory on the connected FTP host.
-        Args:
-            directory (str): Name of directory to work on.
-        """
-        response = self._perform_ftp_command('cwd', directory)
-        print (response)
-
-    def do_cdup(self, *args):
-        """
-        Command to set parent directory as current working directory
-        on the connected FTP host.
-        """
-        response = self._perform_ftp_command('cdup')
-        print (response)
 
     def do_mkdir(self, directory):
         """
@@ -118,7 +95,7 @@ class FtpInterpreter():
             directory (str): Name of directory to create.
         """
         response = self._perform_ftp_command('mkdir', directory)
-        return response
+        print(response)
 
     def do_rm(self, filename):
         """

@@ -32,12 +32,11 @@ def main():
         print("Please provide one valid FTP operation (ls, mkdir, rm, rmdir)")
     elif (args.ls is not None):
         interpreter = initialConnect(interpreter, username, password)
-        interpreter.do_list("/Test")
+        interpreter.do_list("Test")
         logoutAndDisconnect(interpreter)
     elif (args.mkdir is not None):
         interpreter = initialConnect(interpreter, username, password)
-        print(args.url)
-        interpreter.do_mkdir(args.url)
+        #interpreter.do_mkdir(args.url)
         logoutAndDisconnect(interpreter)
     elif (args.rm is not None):
         interpreter = initialConnect(interpreter, username, password)
