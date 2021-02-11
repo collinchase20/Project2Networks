@@ -22,22 +22,9 @@ class FtpInterpreter():
         method = getattr(self._ftp_client, command)
         try:
             response = method(*args)
-        except (FtpClient.TimeoutException,
-                FtpClient.UnknownHostException,
-                FtpClient.ConnectionRefusedException) as e:
-            response = e.msg
-        except FtpClient.NotConnectedException as e:
-            response = e.msg
-            response = ('{}\nPlease connect to an FTP server using'
-                        ' the `connect` command').format(response)
-        except FtpClient.NotAuthenticatedException as e:
-            response = e.msg
-            response = ('{}\nPlease authenticate using the `login` command.')\
-                .format(response)
-        except FtpClient.LocalIOException as e:
-            response = e.msg
-            response = ('{}\nSomething went wrong trying to {} the file,'
-                        ' please try again.').format(response, command)
+        except:
+            response = "Invalid Response When Performing Command"
+
         return response
 
     def emptyline(self):
