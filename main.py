@@ -33,19 +33,19 @@ def main():
     elif (args.ls is not None):
         interpreter = initialConnect(interpreter, username, password)
         interpreter.do_list("Test")
-        logoutAndDisconnect(interpreter)
+        disconnect(interpreter)
     elif (args.mkdir is not None):
         interpreter = initialConnect(interpreter, username, password)
         #interpreter.do_mkdir(args.url)
-        logoutAndDisconnect(interpreter)
+        disconnect(interpreter)
     elif (args.rm is not None):
         interpreter = initialConnect(interpreter, username, password)
         interpreter.do_rm(args.url)
-        logoutAndDisconnect(interpreter)
+        disconnect(interpreter)
     elif (args.rmdir is not None):
         interpreter = initialConnect(interpreter, username, password)
         interpreter.do_rmdir(args.url)
-        logoutAndDisconnect(interpreter)
+        disconnect(interpreter)
     else:
         print("Should Not Come Here")
 
@@ -55,8 +55,7 @@ def initialConnect(interpreter, username, password):
     interpreter.do_login(username, password)
     return interpreter
 
-def logoutAndDisconnect(interpreter):
-    interpreter.do_logout()
+def disconnect(interpreter):
     interpreter.do_disconnect()
 
 

@@ -70,13 +70,6 @@ class FtpInterpreter():
         print(response)
         self._update_prompt()
 
-    def do_logout(self, *args):
-        """
-        Command to logout the current user from the connected FTP host.
-        """
-        self._perform_ftp_command('logout')
-        self._update_prompt()
-
 
     def do_list(self, filename):
         """

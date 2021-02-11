@@ -190,15 +190,6 @@ class FtpClient():
 
         return data
 
-    def logout(self):
-        """
-        Clear info about currently logged user on connected host.
-        """
-        self._check_is_connected()
-        self._check_is_authenticated()
-        self._log('logging out {}'.format(self.user))
-        self.user = None
-
     def list(self, filename=None):
         """
         Perform LIST command on connected host.
