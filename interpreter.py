@@ -37,7 +37,8 @@ class FtpInterpreter():
             host (str): The host to connect to.
         """
         response = self._perform_ftp_command('connect', host)
-        print("This is the connect response" + response)
+        print("This is the connect response")
+        print(response)
         self._update_prompt()
 
 
@@ -46,7 +47,8 @@ class FtpInterpreter():
         Command to disconnect from connected FTP host.
         """
         response = self._perform_ftp_command('disconnect')
-        print("This is the disconnect response" + response)
+        print("This is the disconnect response")
+        print(response)
         self._update_prompt()
 
     def do_login(self, user, password):
@@ -54,7 +56,8 @@ class FtpInterpreter():
         Command to login with user and password in the connected FTP host.
         """
         response = self._perform_ftp_command('login', user, password)
-        print("This is the login response" + response)
+        print("This is the login response")
+        print(response)
         self._update_prompt()
 
 
