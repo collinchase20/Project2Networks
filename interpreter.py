@@ -46,7 +46,7 @@ class FtpInterpreter():
         Command to disconnect from connected FTP host.
         """
         response = self._perform_ftp_command('disconnect')
-        print(response)
+        print("This is the response" + response)
         self._update_prompt()
 
     def do_login(self, user, password):
