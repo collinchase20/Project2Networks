@@ -22,6 +22,8 @@ def main():
     password = initialString.split(":")[1]
     process = initialString.split(":")[1]
     username = process.split("//")[1]
+    print(username)
+    print(password)
 
     if (not args.ls and not args.mkdir and not args.rm and not args.rmdir):
         print("Please provide one valid FTP operation (ls, mkdir, rm, rmdir)")
