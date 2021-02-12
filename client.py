@@ -102,7 +102,7 @@ class FTPClient():
         bit1 = 0
         bit2 = 0
         for i in range(len(listOfNumbers)):
-            if i != 5 or i != 4 or i != 3:
+            if i <= 2:
                 ip += listOfNumbers[i]
                 ip += "."
             elif i == 3:
