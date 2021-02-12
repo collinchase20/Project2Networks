@@ -91,10 +91,34 @@ class FTPClient():
 
     def connectDataTCPSocket(self, response):
         response = response.decode()
-        print(response)
         partialNumbers = response.split(" ")[4]
         numbers = partialNumbers.split(".")[0]
-        print(numbers)
+
+        x = numbers.replace("(", "")
+        x = numbers.replace(")", "")
+        listOfNumbers = x.split(",")
+
+        ip = ""
+        bit1 = 0
+        bit2 = 0
+        for i in range(len(listOfNumbers)):
+            if i != 5 or i != 4 or i != 3:
+                ip += listOfNumbers[i]
+                ip += "."
+            elif i == 3:
+                ip += listOfNumbers[i]
+            elif i == 4:
+                bit1 == listOfNumbers[4]
+            elif i == 5:
+                bit2 == listOfNumbers[5]
+
+        print(ip)
+
+        port = (bit1 << 8) + bit2
+
+        print(port)
+
+        return Exception("made it here")
 
         self.dataSocket = socket.socket()
         #self.dataSocket.connect(ip, port)
