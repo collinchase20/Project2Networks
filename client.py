@@ -108,9 +108,9 @@ class FTPClient():
             elif i == 3:
                 ip += listOfNumbers[i]
             elif i == 4:
-                bit1 += listOfNumbers[4]
+                bit1 += int(listOfNumbers[4])
             elif i == 5:
-                bit2 += listOfNumbers[5]
+                bit2 += int(listOfNumbers[5])
 
         print(ip)
 
@@ -118,7 +118,8 @@ class FTPClient():
 
         print(port)
 
-        return Exception("made it here")
+        return
+
 
         self.dataSocket = socket.socket()
         #self.dataSocket.connect(ip, port)
