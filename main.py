@@ -9,9 +9,6 @@ def main():
 
     # Add arguments
     parser.add_argument('command', type=str)
-    #parser.add_argument('-mkdir', action='store_true')
-    #parser.add_argument('-rm', action='store_true')
-    #parser.add_argument('-rmdir', action='store_true')
     parser.add_argument("url", type=str)
 
     args = parser.parse_args()
@@ -26,14 +23,8 @@ def main():
     #Get the url
     initalString2 = args.url.split("@")[1]
 
-    print(args.command)
 
-    print(args.url)
-
-
-    if (args.command != "mkdir" or args.command != "ls" or args.command != "rm" or args.command != "rmdir"):
-        print("Please provide one valid FTP operation (ls, mkdir, rm, rmdir)")
-    elif (args.command == "ls"):
+    if (args.command == "ls"):
         print("Starting list process")
         initialConnect(interpreter, username, password)
         interpreter.do_list("Test")
@@ -54,7 +45,7 @@ def main():
         interpreter.do_rmdir("/Test")
         interpreter.do_disconnect()
     else:
-        print("Invalid Command")
+        print("Please provide a valid command (ls, mkdir, rmdir, rm")
 
 
 def initialConnect(interpreter, username, password):
