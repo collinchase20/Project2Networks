@@ -60,6 +60,7 @@ class FtpClient():
         self._data_socket_listening = False
 
     def _send_command(self, command, *args):
+        print("preparing to send command data")
         for a in args:
             command = '{} {}'.format(command, a)
             newcommand = '{}\r\n'.format(command)
@@ -67,6 +68,7 @@ class FtpClient():
         try:
             self._command_socket.sendall(finalcommand)
         except socket.timeout as e:
+            print("error sending command")
             raise Exception (e)
 
     def sendCommandNoArguments(self, command):
@@ -79,15 +81,18 @@ class FtpClient():
 
 
     def _receive_command_data(self):
+        print("recieving command data")
         data = self._command_socket.recv(FtpClient.SOCKET_RCV_BYTES)
         return data
 
     def _check_is_connected(self):
         if self.host is None:
+            print("You are not connected")
             raise Exception("You are not connected to a FTP server.")
 
     def _check_is_authenticated(self):
         if self.user is None:
+            print("You are not authenticated")
             raise Exception("You are not authenticated for the FTP server.")
 
     def _open_data_socket(self):
