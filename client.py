@@ -90,6 +90,8 @@ class FTPClient():
         self.connectDataTCPSocket(dataChannelResponse)
 
     def connectDataTCPSocket(self, response):
+        response = response.decode()
+        print(response)
         partialNumbers = response.split(" ")[4]
         numbers = partialNumbers.split(".")[0]
         print(numbers)
