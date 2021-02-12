@@ -1,4 +1,3 @@
-import sys
 import argparse
 from interpreter import FtpInterpreter
 
@@ -26,6 +25,10 @@ def main():
 
     #Get the url
     initalString2 = args.url.split("@")[1]
+
+    print(args.command)
+
+    print(args.url)
 
 
     if (args.command != "mkdir" or args.command != "ls" or args.command != "rm" or args.command != "rmdir"):
