@@ -83,6 +83,15 @@ class FTPClient():
             print("You are not authenticated")
             raise Exception("You are not authenticated for the FTP server.")
 
+    def openDataChannel(self):
+        self.sendCommandNoArguments(FTPClient.PASV_COMMAND)
+        dataChannelResponse = self._receive_command_data()
+        print(dataChannelResponse)
+        self.connectDataTCPSocket(dataChannelResponse)
+
+    def connectDataTCPSocket(self, response):
+        self.datSocket = socket.socket()
+
     def _open_data_socket(self):
         self._data_address, self._data_port = \
             self.controlSocket.getsockname()
@@ -159,6 +168,8 @@ class FTPClient():
 
         self.checkIfConnected()
         self.checkIfAuthenticated()
+
+        self.openDataChannel()
 
         data = self._open_data_connection()
 
