@@ -30,11 +30,11 @@ def main():
 
     if (not args.ls and not args.mkdir and not args.rm and not args.rmdir):
         print("Please provide one valid FTP operation (ls, mkdir, rm, rmdir)")
-    elif (args.ls is not None):
-        print("Starting list process")
-        initialConnect(interpreter, username, password)
+    #elif (args.ls is not None):
+        #print("Starting list process")
+        #initialConnect(interpreter, username, password)
         #interpreter.do_list("Test")
-        interpreter.do_disconnect()
+        #interpreter.do_disconnect()
     elif (args.mkdir is not None):
         print("Starting make directory process")
         initialConnect(interpreter, username, password)
