@@ -9,10 +9,10 @@ def main():
 
 
     # Add arguments
-    parser.add_argument('-ls', action='store_true')
-    parser.add_argument('-mkdir', action='store_true')
-    parser.add_argument('-rm', action='store_true')
-    parser.add_argument('-rmdir', action='store_true')
+    parser.add_argument('-command', action='store_true')
+    #parser.add_argument('-mkdir', action='store_true')
+    #parser.add_argument('-rm', action='store_true')
+    #parser.add_argument('-rmdir', action='store_true')
     parser.add_argument("url")
 
     args = parser.parse_args()
@@ -28,30 +28,30 @@ def main():
     initalString2 = args.url.split("@")[1]
 
 
-    if (not args.ls and not args.mkdir and not args.rm and not args.rmdir):
+    if (args.command != "mkdir" or args.command != "ls" or args.command != "rm" or args.command != "rmdir"):
         print("Please provide one valid FTP operation (ls, mkdir, rm, rmdir)")
-    #elif (args.ls is not None):
-        #print("Starting list process")
-        #initialConnect(interpreter, username, password)
-        #interpreter.do_list("Test")
-        #interpreter.do_disconnect()
-    elif (args.mkdir is not None):
+    elif (args.command == "ls"):
+        print("Starting list process")
+        initialConnect(interpreter, username, password)
+        interpreter.do_list("Test")
+        interpreter.do_disconnect()
+    elif (args.command == "mkdir"):
         print("Starting make directory process")
         initialConnect(interpreter, username, password)
         interpreter.do_mkdir("/MyMadeDirectory")
         interpreter.do_disconnect()
-    elif (args.rm is not None):
+    elif (args.command == "rm"):
         print("Starting rm process")
         initialConnect(interpreter, username, password)
         #interpreter.do_rm(args.url)
         interpreter.do_disconnect()
-    elif (args.rmdir is not None):
+    elif (args.command == "rmdir"):
         print("Starting remove directory process")
         initialConnect(interpreter, username, password)
         interpreter.do_rmdir("/Test")
         interpreter.do_disconnect()
     else:
-        print("Should Not Come Here")
+        print("Invalid Command")
 
 
 def initialConnect(interpreter, username, password):
