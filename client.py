@@ -38,13 +38,9 @@ class FtpClient():
     STATUS_550 = str.encode('550')
     STATUS_530 = str.encode('530')
 
-    def __init__(self, debug=False):
-        self._debug = debug
+    def __init__(self):
         self._reset_sockets()
 
-    def _log(self, info):
-        if self._debug:
-            print('debug: {}'.format(info))
 
     def _reset_sockets(self):
         self._reset_command_socket()
@@ -70,7 +66,6 @@ class FtpClient():
             newcommand = '{}\r\n'.format(command)
             finalcommand = str.encode(newcommand)
         try:
-            self._log('sending command - {}'.format(command))
             self._command_socket.sendall(finalcommand)
         except socket.timeout as e:
             raise Exception (e)
@@ -79,7 +74,6 @@ class FtpClient():
         newcommand = '{}\r\n'.format(command)
         finalcommand = str.encode(newcommand)
         try:
-            self._log('sending command - {}'.format(command))
             self._command_socket.sendall(finalcommand)
         except socket.timeout as e:
             raise Exception (e)
@@ -87,7 +81,6 @@ class FtpClient():
 
     def _receive_command_data(self):
         data = self._command_socket.recv(FtpClient.SOCKET_RCV_BYTES)
-        self._log('received command data - {}'.format(data))
         return data
 
     def _check_is_connected(self):
@@ -112,7 +105,6 @@ class FtpClient():
         self._send_command(FtpClient.EPRT_COMMAND, '|1|{}|{}|'
                            .format(self._data_address, self._data_port))
         self._data_connection, address = self._data_socket.accept()
-        self._log('opened data connection on {}'.format(address))
         data = self._receive_command_data()
         return data
 
@@ -124,11 +116,9 @@ class FtpClient():
             if not data:
                 break
         self._data_connection.close()
-        self._log('received data - {}'.format(total_data))
         return total_data
 
     def _write_to_data_connection(self, content):
-        self._log('sending data - {}'.format(content))
         self._data_connection.sendall(content)
         self._data_connection.close()
 
@@ -147,7 +137,6 @@ class FtpClient():
             self._reset_sockets()
 
         try:
-            self._log('connecting to {}:{}'.format(host, FtpClient.PORT))
             self._command_socket.connect((host, FtpClient.PORT))
             self.host = host
         except socket.timeout as e:
