@@ -9,7 +9,7 @@ def main():
 
 
     # Add arguments
-    parser.add_argument('-command', action='store_true')
+    parser.add_argument('command')
     #parser.add_argument('-mkdir', action='store_true')
     #parser.add_argument('-rm', action='store_true')
     #parser.add_argument('-rmdir', action='store_true')
