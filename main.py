@@ -8,11 +8,11 @@ def main():
 
 
     # Add arguments
-    parser.add_argument('command')
+    parser.add_argument('command', type=str)
     #parser.add_argument('-mkdir', action='store_true')
     #parser.add_argument('-rm', action='store_true')
     #parser.add_argument('-rmdir', action='store_true')
-    parser.add_argument("url")
+    parser.add_argument("url", type=str)
 
     args = parser.parse_args()
     interpreter = FtpInterpreter()
