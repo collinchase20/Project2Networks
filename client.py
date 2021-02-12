@@ -71,10 +71,18 @@ class FtpClient():
             finalcommand = str.encode(newcommand)
         try:
             self._log('sending command - {}'.format(command))
-            #self._command_socket.sendall('{}\r\n'.format(command))
             self._command_socket.sendall(finalcommand)
         except socket.timeout as e:
             raise Exception (e)
+
+    def sendCommandNoArguments(self, command):
+        newcommand = '{}\r\n'.format(command)
+        try:
+            self._log('sending command - {}'.format(command))
+            self._command_socket.sendall(newcommand)
+        except socket.timeout as e:
+            raise Exception (e)
+
 
     def _receive_command_data(self):
         data = self._command_socket.recv(FtpClient.SOCKET_RCV_BYTES)
@@ -160,7 +168,8 @@ class FtpClient():
         """
         self._check_is_connected()
 
-        self._send_command(FtpClient.QUIT_COMMAND)
+        #self._send_command(FtpClient.QUIT_COMMAND)
+        self.sendCommandNoArguments(FtpClient.QUIT_COMMAND)
         data = self._receive_command_data()
         self._reset_sockets()
 

@@ -16,16 +16,6 @@ class FtpInterpreter():
                 prompt = '{} ({})'.format(prompt, self._ftp_client.user)
         self.prompt = '{} > '.format(prompt)
 
-    def _perform_ftp_command(self, command, *args):
-        print("About to perform ftp command")
-        method = getattr(self._ftp_client, command)
-        print(method)
-        try:
-            response = method(*args)
-        except:
-            response = "Invalid Response When Performing Command"
-
-        return response
 
     def emptyline(self):
         pass
@@ -36,7 +26,6 @@ class FtpInterpreter():
         Args:
             host (str): The host to connect to.
         """
-        #response = self._perform_ftp_command('connect', host)
         response = self._ftp_client.connect(host)
         print("This is the connect response")
         print(response)
@@ -47,7 +36,6 @@ class FtpInterpreter():
         """
         Command to disconnect from connected FTP host.
         """
-        #response = self._perform_ftp_command('disconnect')
         response = self._ftp_client.disconnect()
         print("This is the disconnect response")
         print(response)
@@ -57,7 +45,6 @@ class FtpInterpreter():
         """
         Command to login with user and password in the connected FTP host.
         """
-        #response = self._perform_ftp_command('login', user, password)
         response = self._ftp_client.login(user, password)
         print("This is the login response")
         print(response)
