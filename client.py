@@ -231,9 +231,11 @@ class FtpClient():
         Returns:
             Message from host.
         """
+
+        print("at the client trying to make directory")
         self._check_is_connected()
         self._check_is_authenticated()
-
+        print("here trying to make directory")
         self._send_command(FtpClient.MKD_COMMAND, directory)
         data = self._receive_command_data()
 

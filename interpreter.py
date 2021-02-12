@@ -57,6 +57,7 @@ class FtpInterpreter():
         Args:
             directory (str): Name of directory to create.
         """
+        print("starting to make directory")
         response = self._ftp_client.mkdir(directory)
         print("This is the make directory response")
         print(response)
