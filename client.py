@@ -77,9 +77,10 @@ class FtpClient():
 
     def sendCommandNoArguments(self, command):
         newcommand = '{}\r\n'.format(command)
+        finalcommand = str.encode(newcommand)
         try:
             self._log('sending command - {}'.format(command))
-            self._command_socket.sendall(newcommand)
+            self._command_socket.sendall(finalcommand)
         except socket.timeout as e:
             raise Exception (e)
 
