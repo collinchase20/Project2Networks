@@ -36,7 +36,7 @@ def main():
         interpreter.do_disconnect()
     elif (args.mkdir is not None):
         initialConnect(interpreter, username, password)
-        #interpreter.do_mkdir(args.url)
+        interpreter.do_mkdir("/MyMadeDirectory")
         interpreter.do_disconnect()
     elif (args.rm is not None):
         initialConnect(interpreter, username, password)
@@ -44,7 +44,7 @@ def main():
         interpreter.do_disconnect()
     elif (args.rmdir is not None):
         initialConnect(interpreter, username, password)
-        #interpreter.do_rmdir(args.url)
+        interpreter.do_rmdir("/Test")
         interpreter.do_disconnect()
     else:
         print("Should Not Come Here")
