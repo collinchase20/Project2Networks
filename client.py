@@ -94,8 +94,8 @@ class FTPClient():
         partialNumbers = response.split(" ")[4]
         numbers = partialNumbers.split(".")[0]
 
-        x = numbers.replace("(", "")
-        x = numbers.replace(")", "")
+        y = numbers.replace("(", "")
+        x = y.replace(")", "")
         listOfNumbers = x.split(",")
 
         ip = ""
@@ -108,9 +108,9 @@ class FTPClient():
             elif i == 3:
                 ip += listOfNumbers[i]
             elif i == 4:
-                bit1 == listOfNumbers[4]
+                bit1 += listOfNumbers[4]
             elif i == 5:
-                bit2 == listOfNumbers[5]
+                bit2 += listOfNumbers[5]
 
         print(ip)
 
