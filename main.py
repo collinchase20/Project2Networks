@@ -43,7 +43,6 @@ def main():
     if (args.command == "ls"):
         print("Starting list process")
         initialConnect(interpreter, username, password)
-        interpreter.openDataChannel()
         interpreter.doList(directoryString)
         interpreter.doDisconnect()
     elif (args.command == "mkdir"):

@@ -9,9 +9,6 @@ class FTPInterpreter():
         self.ftpClient = FTPClient()
 
 
-    def openDataChannel(self):
-        self.ftpClient.dataSocket()
-
     def doConnect(self, host):
         response = self.ftpClient.connect(host)
         print("This is the connect response")

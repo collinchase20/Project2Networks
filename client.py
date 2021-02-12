@@ -168,7 +168,6 @@ class FTPClient():
 
         self.checkIfConnected()
         self.checkIfAuthenticated()
-
         self.openDataChannel()
 
         data = self._open_data_connection()
