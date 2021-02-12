@@ -90,7 +90,12 @@ class FTPClient():
         self.connectDataTCPSocket(dataChannelResponse)
 
     def connectDataTCPSocket(self, response):
-        self.datSocket = socket.socket()
+        partialNumbers = response.split(" ")[4]
+        numbers = partialNumbers.split(".")[0]
+        print(numbers)
+
+        self.dataSocket = socket.socket()
+        #self.dataSocket.connect(ip, port)
 
     def _open_data_socket(self):
         self._data_address, self._data_port = \
