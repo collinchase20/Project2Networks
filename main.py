@@ -1,5 +1,5 @@
 import argparse
-from interpreter import FtpInterpreter
+from interpreter import FTPInterpreter
 
 
 def main():
@@ -12,18 +12,18 @@ def main():
     parser.add_argument("url", type=str)
 
     args = parser.parse_args()
-    interpreter = FtpInterpreter()
+    interpreter = FTPInterpreter()
 
     if (args.command == None or args.url == None):
         return Exception ("You need to provide at least a command and FTP URL")
 
-    #Get the username and password from ftp url
+    #Get the Username and Password from the FTP URL
     initialString = args.url.split("@")[0]
     password = initialString.split(":")[2]
     process = initialString.split(":")[1]
     username = process.split("//")[1]
 
-    #Get the url
+    #Get the Directory Provided
     initialString2 = args.url.split("@")[1]
     directoryString = ""
     urlSplit = initialString2.split("/")
@@ -43,33 +43,31 @@ def main():
     if (args.command == "ls"):
         print("Starting list process")
         initialConnect(interpreter, username, password)
-        interpreter.do_list(directoryString)
-        interpreter.do_disconnect()
+        interpreter.openDataChannel()
+        interpreter.doList(directoryString)
+        interpreter.doDisconnect()
     elif (args.command == "mkdir"):
         print("Starting make directory process")
         initialConnect(interpreter, username, password)
-        interpreter.do_mkdir(directoryString)
-        interpreter.do_disconnect()
+        interpreter.doMkdir(directoryString)
+        interpreter.doDisconnect()
     elif (args.command == "rm"):
         print("Starting rm process")
         initialConnect(interpreter, username, password)
-        interpreter.do_rm(directoryString)
-        interpreter.do_disconnect()
+        interpreter.doRm(directoryString)
+        interpreter.doDisconnect()
     elif (args.command == "rmdir"):
         print("Starting remove directory process")
         initialConnect(interpreter, username, password)
-        interpreter.do_rmdir(directoryString)
-        interpreter.do_disconnect()
+        interpreter.doRmdir(directoryString)
+        interpreter.doDisconnect()
     else:
         print("Please provide a valid command (ls, mkdir, rmdir, rm")
 
 
 def initialConnect(interpreter, username, password):
-    interpreter.do_connect("networks-teaching-ftp.ccs.neu.edu")
-    interpreter.do_login(username, password)
-
-
-
+    interpreter.doConnect("networks-teaching-ftp.ccs.neu.edu")
+    interpreter.doLogin(username, password)
 
 
 main()
