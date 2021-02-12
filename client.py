@@ -1,6 +1,5 @@
 import socket
 
-
 class FtpClient():
     """
     This class offers a simple interface to interact with an FTP server.
