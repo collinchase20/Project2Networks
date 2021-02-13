@@ -1,103 +1,70 @@
 import socket
+import sys
+import os
 
+#FTP CLient Class which holds methods to perform the various commands required
 class FTPClient():
 
-    PORT = 21
-    SOCKET_TIMEOUT_SECONDS = 5
-    SOCKET_RCV_BYTES = 4096
-
-    USER_COMMAND = 'USER'
-    PASS_COMMAND = 'PASS'
-    TYPE_COMMAND = 'TYPE'
-    MODE_COMMAND = 'MODE'
-    STRU_COMMAND = "STRU"
-    LIST_COMMAND = 'LIST'
-    DELE_COMMAND = 'DELE'
-    MKD_COMMAND = 'MKD'
-    RMD_COMMAND = 'RMD'
-    STOR_COMMAND = 'STOR'
-    RETR_COMMAND = 'RETR'
-    QUIT_COMMAND = 'QUIT'
-    PASV_COMMAND = 'PASV'
-    EPRT_COMMAND = 'ERPT'
-
-    STATUS_230 = str.encode('230')
-    STATUS_550 = str.encode('550')
-    STATUS_530 = str.encode('530')
-
+    #Initialize FTPClient class with an instance of a control socket and a datasocket
+    #Both set to None until initialized
     def __init__(self):
-        self.resetSockets()
+        self.controlSocket = None
+        self.dataSocket = None
 
 
-    def resetSockets(self):
-        self.resetControlSocket()
-        self.resetDataSocket()
-        self.host = None
-        self.user = None
-
-    def resetControlSocket(self):
-        if getattr(self, 'host', None) is not None:
-            self.controlSocket.close()
-        self.controlSocket = socket.socket()
-        self.controlSocket.settimeout(FTPClient.SOCKET_TIMEOUT_SECONDS)
-
-    def resetDataSocket(self):
-        if getattr(self, '_data_socket_listening', False):
-            self.dataSocket.close()
-        self.dataSocket = socket.socket()
-        self._data_socket_listening = False
-
-    def sendCommand(self, command, *args):
-        print("preparing to send command data")
-        for a in args:
-            command = '{} {}'.format(command, a)
+    #Send command method to send command to FTP server
+    def sendCommand(self, command, arg=None):
+        if arg is not None:
+            #print("SENDING COMMAND: " + command)
+            command = '{} {}'.format(command, arg)
+            newcommand = '{}\r\n'.format(command)
+            finalcommand = str.encode(newcommand)
+        else:
+            #print("SENDING COMMAND: " + command)
             newcommand = '{}\r\n'.format(command)
             finalcommand = str.encode(newcommand)
         try:
             self.controlSocket.sendall(finalcommand)
-        except socket.timeout as e:
-            print("error sending command")
-            raise Exception (e)
+        except Exception:
+            print ("Error Sending Command: " + command)
+            exit()
 
-    def sendCommandNoArguments(self, command):
-        newcommand = '{}\r\n'.format(command)
-        finalcommand = str.encode(newcommand)
-        try:
-            self.controlSocket.sendall(finalcommand)
-        except socket.timeout as e:
-            raise Exception (e)
-
-
-    def _receive_command_data(self):
-        print("recieving command data")
-        data = self.controlSocket.recv(FTPClient.SOCKET_RCV_BYTES)
+    #Receieve command data method to return the response from the FTP server
+    def recieveCommandData(self):
+        data = self.controlSocket.recv(1024)
         return data
 
-    def checkIfConnected(self):
-        if self.host is None:
-            print("You are not connected")
-            raise Exception("You are not connected to a FTP server.")
-
-    def checkIfAuthenticated(self):
-        if self.user is None:
-            print("You are not authenticated")
-            raise Exception("You are not authenticated for the FTP server.")
-
+    #OpenDataChannel method to send the required commands before uploading or downloading any data
+    #Connects a data socket at the end with the IP and Port reieved from the FTP server for the data socket
     def openDataChannel(self):
-        self.sendCommandNoArguments(FTPClient.PASV_COMMAND)
-        dataChannelResponse = self._receive_command_data()
+        #Set the TYPE, MODE and STRU before attempting to download or upload any data
+        self.sendCommand("TYPE", "I")
+        response = self.recieveCommandData()
+        #print(response)
+        self.sendCommand("MODE", "S")
+        response = self.recieveCommandData()
+        #print(response)
+        self.sendCommand("STRU", "F")
+        response = self.recieveCommandData()
+        #print(response)
+        #Ask the FTP server to open a data channel
+        self.sendCommand("PASV")
+        dataChannelResponse = self.recieveCommandData()
         print(dataChannelResponse)
-        self.connectDataTCPSocket(dataChannelResponse)
+        #Connect a data socket with the response from the FTP server
+        self.connectDataSocket(dataChannelResponse)
 
-    def connectDataTCPSocket(self, response):
+
+    #ConnectDataSocket method which connects the data socket with the IP and Port provided from the FTP server
+    #Param: Response - the response from the FTP server when asking to open a data socket
+    def connectDataSocket(self, response):
         response = response.decode()
+        #Get the ip address and port from the response
         partialNumbers = response.split(" ")[4]
         numbers = partialNumbers.split(".")[0]
-
         y = numbers.replace("(", "")
         x = y.replace(")", "")
         listOfNumbers = x.split(",")
-
         ip = ""
         bit1 = 0
         bit2 = 0
@@ -111,141 +78,142 @@ class FTPClient():
                 bit1 += int(listOfNumbers[4])
             elif i == 5:
                 bit2 += int(listOfNumbers[5])
-
-        print(ip)
-
         port = (bit1 << 8) + bit2
-
-        print(port)
-
-        return
-
-
-        self.dataSocket = socket.socket()
-        #self.dataSocket.connect(ip, port)
-
-    def _open_data_socket(self):
-        self._data_address, self._data_port = \
-            self.controlSocket.getsockname()
-        self._data_port = self._data_port + 1
-        self.dataSocket.bind(('', self._data_port))
-        self.dataSocket.listen(1)
-        self._data_socket_listening = True
-
-    def _open_data_connection(self):
-        if not self._data_socket_listening:
-            self._open_data_socket()
-        self.sendCommand(FTPClient.EPRT_COMMAND, '|1|{}|{}|'
-                           .format(self._data_address, self._data_port))
-        self._data_connection, address = self.dataSocket.accept()
-        data = self._receive_command_data()
-        return data
-
-    def _read_from_data_connection(self):
-        total_data = ''
-        while True:
-            data = self._data_connection.recv(FTPClient.SOCKET_RCV_BYTES)
-            total_data = total_data + data
-            if not data:
-                break
-        self._data_connection.close()
-        return total_data
-
-    def _write_to_data_connection(self, content):
-        self._data_connection.sendall(content)
-        self._data_connection.close()
-
-    def connect(self, host):
-
-        if self.host is not None:
-            self.resetSockets()
-
-        try:
-            self.controlSocket.connect((host, FTPClient.PORT))
-            self.host = host
-        except socket.error as e:
-            self.resetSockets()
-            raise Exception(e)
-
-        return self._receive_command_data()
-
-    def disconnect(self):
-        self.checkIfConnected()
-
-        self.sendCommandNoArguments(FTPClient.QUIT_COMMAND)
-        data = self._receive_command_data()
-        self.resetSockets()
-
-        return data
-
-    def login(self, user, password):
-
-        self.checkIfConnected()
-
-        self.sendCommand(FTPClient.USER_COMMAND, user)
-        self._receive_command_data()
-
-        self.sendCommand(FTPClient.PASS_COMMAND, password)
-        data = self._receive_command_data()
-
-        if data.startswith(FTPClient.STATUS_230):
-            self.user = user
-        elif data.startswith(FTPClient.STATUS_530):
-            self.user = None
-
-        return data
+        #Initialize a data socket with the IP and port from the response
+        self.dataSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.dataSocket.connect((ip, port))
 
 
-    def list(self, filename=None):
+    #readFromDataChannel method to recieve the data from the opened dataChannel
+    #Param: File: where we are writing the data to.
+    def readFromDataChannel(self, file):
+        data = ""
+        someData = self.dataSocket.recv(1024)
+        decodedData = someData.decode()
+        data += decodedData
+        while decodedData != "":
+            someData = self.dataSocket.recv(1024)
+            decodedData = someData.decode()
+            data += decodedData
+        return file.write(data)
 
-        self.checkIfConnected()
-        self.checkIfAuthenticated()
-        self.openDataChannel()
+    #writeToDataChannel method to send data to our opened data socket.
+    #Param: File: the file in which we are reading the data and sending to the data channel
+    def writeToDataChannel(self, file):
+        data = file.read(1024)
+        dataencoded = data.encode()
+        while data:
+            self.dataSocket.send(dataencoded)
+            data = file.read(1024)
 
-        data = self._open_data_connection()
+    #closeDataChannel method to close the data socket after it has been used. Should be closed after each command
+    #that requires use of the data socket.
+    def closeDataChannel(self):
+        self.dataSocket.close()
 
-        if filename is not None:
-            self.sendCommand(FTPClient.LIST_COMMAND, filename)
+    #MV method which performs the move operation to move a file from one place to another
+    def mv(self, directory, file, isFTPFirst):
+        #We first use the copy function to copy the file to where it is going
+        self.cp(directory, file, isFTPFirst)
+        #We then use the delete function to delete the file from where it came from
+        #or we remove the file from the operating system with the os library
+        if isFTPFirst:
+            self.rm(directory)
         else:
-            self.sendCommand(FTPClient.LIST_COMMAND)
+            os.remove(file)
 
-        list_data = self._receive_command_data()
-        data = data + list_data
+    #CP method which copies a file from one place to another
+    def cp(self, directory, file, isFTPFirst):
+        #If the FTP URL was the first parameter we are copying the file there to local
+        if isFTPFirst:
+            self.openDataChannel()
+            self.sendCommand("RETR", directory)
+            fileWrite = open(file, "w")
+            data = self.readFromDataChannel(fileWrite)
+            print(data)
+        #Else if the FTP URL was not first we are copying a local file to ftp
+        else:
+            self.openDataChannel()
+            self.sendCommand("STOR", directory)
+            try:
+                fileRead = open(file, "r")
+                print("File read successfully")
+                self.writeToDataChannel(fileRead)
+            except Exception:
+                print("There was a problem trying to open the file or write to data channel " + file)
+                exit()
+        #Close the data channel when we are done with it
+        self.closeDataChannel()
 
-        if not list_data.startswith(FTPClient.STATUS_550):
-            data = data + self._read_from_data_connection()
-            data = data + self._receive_command_data()
 
-        return data
+    #List method which prints the directory listing of the directory provided as a paramter
+    def list(self, directory=None):
+        self.openDataChannel()
+        #If file name is None we are listing the root directory
+        if directory is not None:
+            self.sendCommand("LIST", directory)
+        else:
+            self.sendCommand("LIST")
+        data = self.recieveCommandData()
+        print(data)
+        self.readFromDataChannel(sys.stdout)
+        #Close the data channel now that we are done with it
+        self.closeDataChannel()
 
+    #RM method which removes a file at the specified location provided by the directory command
+    def rm(self, directory):
+        self.sendCommand("DELE", directory)
+        data = self.recieveCommandData()
+        print(data)
+        if (str.encode("550") in data):
+            print ("Cant remove the file. Check if the path you provided is to an actual file.")
+            exit()
 
+    #MKDIR command which makes a directory on the FTP server at the provided location
     def mkdir(self, directory):
+        self.sendCommand("MKD", directory)
+        data = self.recieveCommandData()
+        print(data)
+        if (str.encode("550") in data):
+            print ("Cant make the directory. Check if the path you specified to make a directory is correct and that the directory does "
+                    "not already exist. Note: you cannot make multiple directories at the same time.")
+            exit()
 
-        print("at the client trying to make directory")
-        self.checkIfConnected()
-        self.checkIfAuthenticated()
-        print("here trying to make directory")
-        self.sendCommand(FTPClient.MKD_COMMAND, directory)
-        data = self._receive_command_data()
-
-        return data
-
-    def rm(self, filename):
-
-        self.checkIfConnected()
-        self.checkIfAuthenticated()
-
-        self.sendCommand(FTPClient.DELE_COMMAND, filename)
-        data = self._receive_command_data()
-
-        return data
-
+    #RMDIR command which removes a directory from the FTP server at the provided location
     def rmdir(self, directory):
+        self.sendCommand("RMD", directory)
+        data = self.recieveCommandData()
+        print(data)
+        if (str.encode("550") in data):
+            print ("Cant remove directory. Check the path is correct and that the directory you are trying to "
+                    "remove actually exists.")
+            exit()
 
-        self.checkIfConnected()
-        self.checkIfAuthenticated()
+    #Connect method which connects our control socket to the FTP server with the provided host and port
+    def connect(self, host, port):
+        try:
+            self.controlSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            self.controlSocket.connect((host, port))
+        except Exception:
+            print ("Error trying to connect to host. Check the Host or the Port.")
+            exit()
+        data = self.recieveCommandData()
+        print(data)
 
-        self.sendCommand(FTPClient.RMD_COMMAND, directory)
-        data = self._receive_command_data()
 
-        return data
+    #Disconnect method which disconnects the program from the FTP server
+    def disconnect(self):
+        self.sendCommand("QUIT")
+        data = self.recieveCommandData()
+        print(data)
+
+    #Login method which logs a user into the FTP server with the specified username and password as paramters
+    def login(self, user, password):
+        self.sendCommand("USER", user)
+        self.recieveCommandData()
+        self.sendCommand("PASS", password)
+        data = self.recieveCommandData()
+        print(data)
+        if (str.encode("530") in data):
+            print ("Error with the username or the password.")
+            exit()
