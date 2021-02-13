@@ -1,5 +1,4 @@
 import socket
-import sys
 import os
 
 #FTP CLient Class which holds methods to perform the various commands required
@@ -83,28 +82,39 @@ class FTPClient():
         self.dataSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.dataSocket.connect((ip, port))
 
-
     #readFromDataChannel method to recieve the data from the opened dataChannel
-    #Param: File: where we are writing the data to.
-    def readFromDataChannel(self, file):
+    #Param: File: where we are writing the data to. If not provided we are printing the data
+    def readFromDataChannel(self, file=None):
         data = ""
-        someData = self.dataSocket.recv(1024)
-        decodedData = someData.decode()
+        someData = self.dataSocket.recv(4096)
+        try:
+            decodedData = someData.decode()
+        except:
+            print("Cant decode certain byte from the file. File could be corupt.")
+            exit()
         data += decodedData
         while decodedData != "":
-            someData = self.dataSocket.recv(1024)
+            someData = self.dataSocket.recv(4096)
             decodedData = someData.decode()
             data += decodedData
-        return file.write(data)
+        #If file not provided we are in LS command and printing directory
+        if file == None:
+            print(data)
+        #Else we are writing the data to the file provided
+        else:
+            with open(file, 'w') as openedFile:
+                return openedFile.write(data)
 
     #writeToDataChannel method to send data to our opened data socket.
     #Param: File: the file in which we are reading the data and sending to the data channel
     def writeToDataChannel(self, file):
-        data = file.read(1024)
-        dataencoded = data.encode()
-        while data:
-            self.dataSocket.send(dataencoded)
-            data = file.read(1024)
+        with open(file, 'r') as openedFile:
+            data = openedFile.read(4096)
+            dataencoded = data.encode()
+            while data:
+                self.dataSocket.send(dataencoded)
+                data = openedFile.read(4096)
+                dataencoded = data.encode()
 
     #closeDataChannel method to close the data socket after it has been used. Should be closed after each command
     #that requires use of the data socket.
@@ -128,25 +138,22 @@ class FTPClient():
         if isFTPFirst:
             self.openDataChannel()
             self.sendCommand("RETR", directory)
-            fileWrite = open(file, "w")
-            data = self.readFromDataChannel(fileWrite)
+            data = self.readFromDataChannel(file)
             print(data)
         #Else if the FTP URL was not first we are copying a local file to ftp
         else:
             self.openDataChannel()
             self.sendCommand("STOR", directory)
             try:
-                fileRead = open(file, "r")
-                print("File read successfully")
-                self.writeToDataChannel(fileRead)
+                self.writeToDataChannel(file)
             except Exception:
-                print("There was a problem trying to open the file or write to data channel " + file)
+                print("There was a problem trying to open and find the file or write to data channel " + file)
                 exit()
         #Close the data channel when we are done with it
         self.closeDataChannel()
 
 
-    #List method which prints the directory listing of the directory provided as a paramter
+    #List method which writes the directory listing of the directory provided to the terminal
     def list(self, directory=None):
         self.openDataChannel()
         #If file name is None we are listing the root directory
@@ -156,7 +163,7 @@ class FTPClient():
             self.sendCommand("LIST")
         data = self.recieveCommandData()
         print(data)
-        self.readFromDataChannel(sys.stdout)
+        self.readFromDataChannel()
         #Close the data channel now that we are done with it
         self.closeDataChannel()
 
@@ -166,7 +173,7 @@ class FTPClient():
         data = self.recieveCommandData()
         print(data)
         if (str.encode("550") in data):
-            print ("Cant remove the file. Check if the path you provided is to an actual file.")
+            print ("Cant remove the file. Check if the path you provided is to an actual file and is not a directory.")
             exit()
 
     #MKDIR command which makes a directory on the FTP server at the provided location
@@ -186,7 +193,7 @@ class FTPClient():
         print(data)
         if (str.encode("550") in data):
             print ("Cant remove directory. Check the path is correct and that the directory you are trying to "
-                    "remove actually exists.")
+                    "remove actually exists. Also you cannot remove directories that have files in them.")
             exit()
 
     #Connect method which connects our control socket to the FTP server with the provided host and port
